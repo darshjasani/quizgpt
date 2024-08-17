@@ -1,0 +1,18 @@
+<!-- quiz/templates/quiz/upload.html -->
+
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1>Upload PDF</h1>
+<form method="post" enctype="multipart/form-data" id="pdf-upload-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+<script>
+    document.getElementById('pdf-upload-form').addEventListener('submit', function() {
+        document.querySelector('.loading').style.display = 'block';
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,22 @@
+<!-- quiz/templates/quiz/settings.html -->
+
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1>Quiz Settings</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Generate Quiz</button>
+</form>
+
+<script>
+    const ranges = document.querySelectorAll('input[type="range"]');
+    ranges.forEach(range => {
+        const output = document.createElement('span');
+        output.textContent = range.value;
+        range.parentNode.insertBefore(output, range.nextSibling);
+        range.addEventListener('input', () => output.textContent = range.value);
+    });
+</script>
+{% endblock %}

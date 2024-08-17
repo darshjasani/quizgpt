@@ -14,11 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path, include
+# pdf_quiz_generator/urls.py
 
+from django.contrib import admin
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from main.views import PDFUploadView, QuizSettingsView, QuizResultsView
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("",include('main.urls')),
+    path('admin/', admin.site.urls),
+    path('', PDFUploadView.as_view(), name='pdf_upload'),
+    path('settings/<int:pdf_id>/', QuizSettingsView.as_view(), name='quiz_settings'),
+    path('results/<int:pdf_id>/', QuizResultsView.as_view(), name='quiz_results'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
