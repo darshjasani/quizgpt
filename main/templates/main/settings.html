@@ -3,19 +3,24 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<h1>Quiz Settings</h1>
-<form method="post">
+<h1 class="text-center animate__animated animate__fadeInDown">Quiz Settings</h1>
+<form method="post" class="animate__animated animate__fadeInUp">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Generate Quiz</button>
+    {% for field in form %}
+    <div class="mb-3">
+        {{ field.label_tag }}
+        {{ field }}
+        <span id="{{ field.id_for_label }}-value"></span>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary w-100">Generate Quiz</button>
 </form>
 
 <script>
     const ranges = document.querySelectorAll('input[type="range"]');
     ranges.forEach(range => {
-        const output = document.createElement('span');
+        const output = document.getElementById(`${range.id}-value`);
         output.textContent = range.value;
-        range.parentNode.insertBefore(output, range.nextSibling);
         range.addEventListener('input', () => output.textContent = range.value);
     });
 </script>

@@ -3,9 +3,31 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
-<h1>Quiz Results</h1>
-<p>PDF: {{ pdf.file.name }}</p>
-<p>Easy Questions: {{ settings.easy_questions }}</p>
-<p>Medium Questions: {{ settings.medium_questions }}</p>
-<p>Hard Questions: {{ settings.hard_questions }}</p>
+<h1 class="text-center animate__animated animate__fadeInDown">Quiz Results</h1>
+<div class="animate__animated animate__fadeInUp">
+    <p>PDF: {{ pdf.file.name }}</p>
+    <p>Easy Questions: {{ settings.easy_questions }}</p>
+    <p>Medium Questions: {{ settings.medium_questions }}</p>
+    <p>Hard Questions: {{ settings.hard_questions }}</p>
+
+    <h2 class="mt-4">Generated Questions</h2>
+    {% for question in questions %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ question.text }}</h5>
+            <p class="card-text">Difficulty: {{ question.difficulty }}</p>
+            <form>
+                {% for option in question.options %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ forloop.parentloop.counter }}" id="option_{{ forloop.counter }}" value="{{ option }}">
+                    <label class="form-check-label" for="option_{{ forloop.counter }}">
+                        {{ option }}
+                    </label>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}

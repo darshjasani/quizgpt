@@ -1,8 +1,9 @@
 # quiz/views.py
 
+import requests
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import PDF, QuizSettings
+from .models import PDF, QuizSettings, Question
 from .forms import PDFUploadForm, QuizSettingsForm
 
 class PDFUploadView(View):
@@ -37,4 +38,32 @@ class QuizResultsView(View):
     def get(self, request, pdf_id):
         pdf = PDF.objects.get(id=pdf_id)
         settings = pdf.quizsettings
-        return render(request, 'main/results.html', {'pdf': pdf, 'settings': settings})
+        questions = self.generate_questions(pdf, settings)
+        return render(request, 'main/results.html', {'pdf': pdf, 'settings': settings, 'questions': questions})
+
+    def generate_questions(self, pdf, settings):
+        questions = []
+        difficulty_levels = [
+            ('easy', settings.easy_questions),
+            ('medium', settings.medium_questions),
+            ('hard', settings.hard_questions)
+        ]
+
+        for difficulty, count in difficulty_levels:
+            if count > 0:
+                # Replace this with your actual API call
+                api_url = f"https://example-api.com/generate-questions?pdf_url={pdf.file.url}&difficulty={difficulty}&count={count}"
+                response = requests.get(api_url)
+                if response.status_code == 200:
+                    api_questions = response.json()['questions']
+                    for q in api_questions:
+                        question = Question.objects.create(
+                            pdf=pdf,
+                            text=q['text'],
+                            difficulty=difficulty,
+                            options=q['options'],
+                            correct_answer=q['correct_answer']
+                        )
+                        questions.append(question)
+
+        return questions
